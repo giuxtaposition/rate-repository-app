@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-import { REPOSITORY_FRAGMENT } from './fragments';
+import { REPOSITORY_FRAGMENT, REVIEW_FRAGMENT } from './fragments';
 
 export const GET_REPOSITORIES = gql`
   query repositories(
@@ -47,11 +47,29 @@ export const GET_USERS = gql`
   }
 `;
 
-export const AUTHORIZED_USER = gql`
-  query {
+export const GET_AUTHORIZED_USER = gql`
+  query getAuthorizedUser($includeReviews: Boolean = false) {
     authorizedUser {
       id
       username
+      reviews @include(if: $includeReviews) {
+        ...ReviewFields
+      }
     }
   }
+  ${REVIEW_FRAGMENT}
+`;
+
+export const GET_REPOSITORY = gql`
+  query repository($id: ID!, $first: Int, $after: String) {
+    repository(id: $id) {
+      url
+      ...RepositoryFields
+      reviews(first: $first, after: $after) {
+        ...ReviewFields
+      }
+    }
+  }
+  ${REPOSITORY_FRAGMENT}
+  ${REVIEW_FRAGMENT}
 `;

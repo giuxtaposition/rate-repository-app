@@ -16,3 +16,28 @@ export const REPOSITORY_FRAGMENT = gql`
     ownerAvatarUrl
   }
 `;
+
+export const REVIEW_FRAGMENT = gql`
+  fragment ReviewFields on ReviewConnection {
+    totalCount
+    edges {
+      node {
+        id
+        text
+        rating
+        createdAt
+        repositoryId
+        user {
+          id
+          username
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+    }
+  }
+`;

@@ -7,16 +7,21 @@ import * as yup from 'yup';
 import theme from '../theme';
 import Text from './Text';
 
-import useSignIn from '../hooks/useSignIn';
+import useSignUp from '../hooks/useSignUp';
 
 const initialValues = {
   username: '',
   password: '',
+  confirmationPassword: '',
 };
 
 const validationSchema = yup.object().shape({
   username: yup.string().required('Username is required'),
   password: yup.string().required('Password is required'),
+  confirmationPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], "Passwords don't match")
+    .required('Password confirmation is required'),
 });
 
 const styles = StyleSheet.create({
@@ -47,12 +52,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export const SignInContainer = ({ signIn }) => {
+export const SignInContainer = ({ signUp }) => {
   const onSubmit = async values => {
     const { username, password } = values;
 
     try {
-      await signIn({ username, password });
+      await signUp({ username, password });
     } catch (e) {
       console.log('error  ', e);
     }
@@ -80,6 +85,13 @@ export const SignInContainer = ({ signIn }) => {
               style={styles.inputField}
               testID='passwordField'
             />
+            <FormikTextInput
+              name='confirmationPassword'
+              placeholder='Password confirmation'
+              secureTextEntry
+              style={styles.inputField}
+              testID='confirmationPasswordField'
+            />
             <TouchableOpacity onPress={handleSubmit} testID='submitButton'>
               <Text style={styles.submitButton}>Submit</Text>
             </TouchableOpacity>
@@ -90,10 +102,10 @@ export const SignInContainer = ({ signIn }) => {
   );
 };
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
+const SignUp = () => {
+  const [signUp] = useSignUp();
 
-  return <SignInContainer signIn={signIn} />;
+  return <SignInContainer signUp={signUp} />;
 };
 
-export default SignIn;
+export default SignUp;

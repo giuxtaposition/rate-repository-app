@@ -7,16 +7,20 @@ import * as yup from 'yup';
 import theme from '../theme';
 import Text from './Text';
 
-import useSignIn from '../hooks/useSignIn';
+import useCreateReview from '../hooks/useCreateReview';
 
 const initialValues = {
-  username: '',
-  password: '',
+  ownerName: '',
+  repositoryName: '',
+  rating: '',
+  review: '',
 };
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required('Username is required'),
-  password: yup.string().required('Password is required'),
+  ownerName: yup.string().required('Repository owner name is required'),
+  repositoryName: yup.string().required('Repository name is required'),
+  rating: yup.number().min(0).max(100).required('rating is required'),
+  review: yup.string(),
 });
 
 const styles = StyleSheet.create({
@@ -27,7 +31,6 @@ const styles = StyleSheet.create({
   formContainer: {
     padding: 5,
   },
-
   inputField: {
     padding: 5,
     margin: 5,
@@ -47,12 +50,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export const SignInContainer = ({ signIn }) => {
+export const CreateReviewContainer = ({ createReview }) => {
   const onSubmit = async values => {
-    const { username, password } = values;
+    const { ownerName, repositoryName, rating, review } = values;
 
     try {
-      await signIn({ username, password });
+      await createReview({
+        ownerName,
+        repositoryName,
+        rating,
+        text: review,
+      });
     } catch (e) {
       console.log('error  ', e);
     }
@@ -68,20 +76,34 @@ export const SignInContainer = ({ signIn }) => {
         {({ handleSubmit }) => (
           <View style={styles.formContainer}>
             <FormikTextInput
-              name='username'
-              placeholder='username'
+              name='ownerName'
+              placeholder='Repository owner name'
               style={styles.inputField}
-              testID='usernameField'
+              testID='repositoryOwnerField'
             />
             <FormikTextInput
-              name='password'
-              placeholder='password'
+              name='repositoryName'
+              placeholder='Repository name'
+              style={styles.inputField}
+              testID='repositoryNameField'
+            />
+            <FormikTextInput
+              name='rating'
+              placeholder='Rating between 0 and 100'
+              style={styles.inputField}
+              testID='ratingField'
+              keyboardType='number-pad'
+            />
+            <FormikTextInput
+              name='review'
+              placeholder='Review'
               secureTextEntry
               style={styles.inputField}
-              testID='passwordField'
+              testID='reviewField'
+              multiline
             />
             <TouchableOpacity onPress={handleSubmit} testID='submitButton'>
-              <Text style={styles.submitButton}>Submit</Text>
+              <Text style={styles.submitButton}>Create a Review</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -90,10 +112,10 @@ export const SignInContainer = ({ signIn }) => {
   );
 };
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
+const CreateReview = () => {
+  const [createReview] = useCreateReview();
 
-  return <SignInContainer signIn={signIn} />;
+  return <CreateReviewContainer createReview={createReview} />;
 };
 
-export default SignIn;
+export default CreateReview;

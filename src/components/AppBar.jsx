@@ -6,7 +6,7 @@ import theme from '../theme';
 
 import Text from './Text';
 import { useQuery } from '@apollo/client';
-import { AUTHORIZED_USER } from '../graphql/queries';
+import { GET_AUTHORIZED_USER } from '../graphql/queries';
 import useSignOut from '../hooks/useSignOut';
 import useAuthStorage from '../hooks/useAuthStorage';
 
@@ -22,6 +22,9 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     marginRight: 10,
+  },
+  textColor: {
+    color: 'white',
   },
 });
 
@@ -55,7 +58,7 @@ const AppBar = () => {
   let authorizedUser = null;
 
   if (accessToken) {
-    const { data } = useQuery(AUTHORIZED_USER, {
+    const { data } = useQuery(GET_AUTHORIZED_USER, {
       fetchPolicy: 'cache-and-network',
     });
 
@@ -67,13 +70,22 @@ const AppBar = () => {
   }
 
   return (
-    <View>
-      <ScrollView contentContainerStyle={styles.container} horizontal>
+    <View style={styles.container}>
+      <ScrollView horizontal>
         <TabItem props={{ label: 'Repositories', link: '/repositories' }} />
         {authorizedUser ? (
-          <TabItem props={{ label: 'Sign Out', onPress: signOut }} />
+          <>
+            <TabItem
+              props={{ label: 'Create a Review', link: '/createReview' }}
+            />
+            <TabItem props={{ label: 'My Reviews', link: '/userReviews' }} />
+            <TabItem props={{ label: 'Sign Out', onPress: signOut }} />
+          </>
         ) : (
-          <TabItem props={{ label: 'Sign In', link: '/signin' }} />
+          <>
+            <TabItem props={{ label: 'Sign In', link: '/signin' }} />
+            <TabItem props={{ label: 'Sign Up', link: '/signup' }} />
+          </>
         )}
       </ScrollView>
     </View>
