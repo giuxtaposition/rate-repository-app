@@ -1,12 +1,12 @@
-import React from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
-import { useParams } from 'react-router-native';
-import { format } from 'date-fns';
+import React from 'react'
+import { FlatList, View, StyleSheet } from 'react-native'
+import { useParams } from 'react-router-native'
+import { format } from 'date-fns'
 
-import useRepository from '../hooks/useRepository';
-import theme from '../theme';
-import RepositoryItem from './RepositoryList/RepositoryItem';
-import Text from './Text';
+import useRepository from '../hooks/useRepository'
+import theme from '../theme'
+import RepositoryItem from './RepositoryList/RepositoryItem'
+import Text from './Text'
 
 const styles = StyleSheet.create({
   container: {
@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
     marginRight: 40,
     paddingRight: 20,
   },
-});
+})
 
 const RepositoryInfo = ({ repository }) => {
-  return <RepositoryItem item={repository} showGithubButton={true} />;
-};
+  return <RepositoryItem item={repository} showGithubButton={true} />
+}
 
 const ReviewItem = ({ review }) => {
   return (
@@ -56,22 +56,22 @@ const ReviewItem = ({ review }) => {
         <Text>{review.text}</Text>
       </View>
     </View>
-  );
-};
+  )
+}
 
 class SingleRepositoryContainer extends React.Component {
   renderHeader = () => {
-    const { repository } = this.props;
+    const { repository } = this.props
 
-    return <RepositoryInfo repository={repository} />;
-  };
+    return <RepositoryInfo repository={repository} />
+  }
 
   render() {
-    const { reviews, onEndReach } = this.props;
+    const { reviews, onEndReach } = this.props
 
-    const reviewNodes = reviews ? reviews.edges.map(edge => edge.node) : [];
+    const reviewNodes = reviews ? reviews.edges.map(edge => edge.node) : []
 
-    const renderItem = ({ item }) => <ReviewItem review={item} />;
+    const renderItem = ({ item }) => <ReviewItem review={item} />
 
     return (
       <FlatList
@@ -80,23 +80,23 @@ class SingleRepositoryContainer extends React.Component {
         keyExtractor={({ id }) => id}
         ListHeaderComponent={this.renderHeader}
         onEndReached={onEndReach}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.15}
       />
-    );
+    )
   }
 }
 
 const SingleRepository = () => {
-  const { id } = useParams();
-  const { repository, reviews, fetchMore } = useRepository({ first: 4, id });
+  const { id } = useParams()
+  const { repository, reviews, fetchMore } = useRepository({ first: 4, id })
 
   if (!repository) {
-    return <Text>Loading...</Text>;
+    return <Text>Loading...</Text>
   }
 
   const onEndReach = () => {
-    fetchMore();
-  };
+    fetchMore()
+  }
 
   return (
     <SingleRepositoryContainer
@@ -104,7 +104,7 @@ const SingleRepository = () => {
       onEndReach={onEndReach}
       repository={repository}
     />
-  );
-};
+  )
+}
 
-export default SingleRepository;
+export default SingleRepository
